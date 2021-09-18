@@ -6,6 +6,3 @@ api-server/%: ## api-server/${lang}docker-compose up with mysql and api-server
 isuumo/%: ## isuumo/${lang} docker-compose up with mysql and api-server frontend nginx
 	docker-compose -f docker-compose/$(shell basename $@).yaml down -v
 	docker-compose -f docker-compose/$(shell basename $@).yaml up -d --build mysql api-server nginx frontend
-
-attach:mysql:
-	docker-compose -f docker-compose/go.yaml exec mysql bash

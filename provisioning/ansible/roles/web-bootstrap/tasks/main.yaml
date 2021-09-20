@@ -76,14 +76,13 @@
   become_user: root
   apt:
     name:
-    - mysql-server-5.7
-    - mysql-server-core-5.7
-    - mysql-common
-    - mysql-client-5.7
-    - mysql-client-core-5.7
-    - libmysqld-dev
+      - mysql-server-5.7
+      - mysql-server-core-5.7
+      - mysql-common
+      - mysql-client-5.7
+      - mysql-client-core-5.7
+      - libmysqld-dev
     update_cache: yes
-
 
 - name: Set Temporary password
   become: yes
@@ -100,7 +99,7 @@
   become: yes
   become_user: root
   shell: |
-      mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO isucon@localhost IDENTIFIED BY 'isucon' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+    mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO isucon@localhost IDENTIFIED BY 'isucon' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
 - name: Remove Temporary file
   become: yes
@@ -129,10 +128,20 @@
     group: "root"
     mode: "0644"
 
+- name: Copy slow-mysqld.conf
+  become: yes
+  become_user: root
+  copy:
+    src: "slow-mysqld.cnf"
+    dest: "/etc/mysql/conf.d/slow-mysqld.cnf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+
 - name: Install Faker for Initialize Data
   become: yes
   become_user: root
-  environment: 
+  environment:
     <<: *env
   pip:
     executable: pip3
@@ -143,7 +152,7 @@
   become_user: isucon
   args:
     chdir: /home/isucon/isuumo/initial-data
-  environment: 
+  environment:
     <<: *env
   shell: |
     make chair_data && make estate_data
@@ -207,4 +216,3 @@
   copy:
     src: "env.sh"
     dest: /home/isucon
-
